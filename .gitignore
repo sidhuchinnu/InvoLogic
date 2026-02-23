@@ -91,3 +91,5 @@ local_config.py
 *.csv
 *.xlsx
 *.xls
+.vercel
+.env*.local

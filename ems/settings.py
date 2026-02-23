@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+
+import pymysql
+
+pymysql.install_as_MySQLdb()
 # from django.core.exceptions import ImproperlyConfigured  # might need this later
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,8 +36,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-this')
 # TODO: Set DEBUG=False before deploying to production
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,17 +87,16 @@ WSGI_APPLICATION = 'ems.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+# settings.py mein jao aur ye update karo
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bmkunivpp0cnhbe1vstn',
-        'USER': 'uyrdchgb1mkwm1yj',
+        'USER': 'uyrdchgb1mkwm1yj',  # <--- Dhyan se: 'l' hata dena yahan se
         'PASSWORD': 'qA22Sfm6Opmx9e5P6hAx',
         'HOST': 'bmkunivpp0cnhbe1vstn-mysql.services.clever-cloud.com',
         'PORT': '3306',
-        'OPTIONS': {
-            'ssl': {'ca': ''},
-        },
     }
 }
 
@@ -134,6 +137,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
@@ -156,3 +160,11 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', f'EMS <{EMAIL_HOST_USER}>')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'admin_dashboard'
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
+
+
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
